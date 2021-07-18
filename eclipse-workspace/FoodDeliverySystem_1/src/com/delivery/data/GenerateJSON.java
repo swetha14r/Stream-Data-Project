@@ -13,10 +13,14 @@ import static com.delivery.data.GenerateRandomInfo.generateTip;
 import static com.delivery.data.GenerateRandomInfo.generateRandomNoOfItems;
 import static com.delivery.data.GenerateRandomInfo.generateItemsList;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalTime;
 import java.util.*;
-public class Main {
-	public static void main(String[] args) throws InterruptedException
+public class GenerateJSON {
+	public static void main(String[] args) throws InterruptedException, IOException
 	{
 		String[] items = { "Idli", "Dosa", "Pizza", "Pasta", "French Fries", "Muffins", "Brownies", "Naan",
                 "Noodles", "Paneer Butter Masala", "Aloo Paratha", "Fried Rice" ,"Waffles","Momo","Burger","Taco"};
@@ -47,12 +51,14 @@ public class Main {
             LocalTime orderTime = generateOrderTime(generator);
             deliveryinfo.setOrderTime(orderTime);
             deliveryinfo.setDeliveryTime(generateDeliveryTime(orderTime));
-            //System.out.println(deliveryinfo);
-            SimpleKafkaProducer.sendDataToKafkaMultipleBroker(deliveryinfo.toString(),"testingfooddelivery",deliveryinfo.getModeOfPayment());
-        }
-        //System.out.println("Written " + records + " to Kafka.");
+            File file=new File("/home/swetha/eclipse-workspace/FoodDeliverySystem_1/src/com/delivery/food_info.json");
+            FileWriter fw=new FileWriter(file,true);
+            BufferedWriter bw=new BufferedWriter(fw);
+            bw.append(deliveryinfo.toString()+"\n");
+            bw.flush();
+            bw.close();
+            }
 		Thread.sleep(3000);
     }
 	}
-	
 }
